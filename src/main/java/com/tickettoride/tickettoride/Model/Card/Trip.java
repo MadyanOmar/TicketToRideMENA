@@ -7,6 +7,7 @@ public class Trip {
     private final Location destination;
     private final int points;
     private State state;
+    public static final int NUMBER_TRIPS = 40;
 
     public Trip(Location start, Location end, int score){
         this.origin = start;
