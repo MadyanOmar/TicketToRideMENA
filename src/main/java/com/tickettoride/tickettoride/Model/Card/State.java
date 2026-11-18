@@ -1,6 +1,6 @@
 package com.tickettoride.tickettoride.Model.Card;
 
 public enum State{
-    HIDDEN, EXPOSED, INCOMPLETE, COMPLETE
+    HIDDEN, EXPOSED, INCOMPLETE, COMPLETE, USED, UNUSED
 }
 

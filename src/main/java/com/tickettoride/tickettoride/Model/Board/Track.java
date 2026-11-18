@@ -1,6 +1,5 @@
 package com.tickettoride.tickettoride.Model.Board;
 
-import com.tickettoride.tickettoride.Model.Card.Card;
 import com.tickettoride.tickettoride.Model.Card.Train;
 import com.tickettoride.tickettoride.Model.Color;
 import com.tickettoride.tickettoride.Model.Player.Player;
@@ -37,21 +36,21 @@ public class Track {
     }
 
     public boolean isClaimed(){return occupied;}
-    public boolean isSameColor(Card train){return trackColor == Color.GRAY || train.isSameColor(trackColor);}
+    public boolean isSameColor(Train train){return trackColor == Color.GRAY || train.isSameColor(trackColor);}
 
-    public boolean validCards(List<Card> submittedCards){
+    public boolean validCards(List<Train> submittedCards){
         int numCards = submittedCards.size();
         if(numCards != numTracks) return false;
-        Card firstCard = submittedCards.get(0);
+        Train firstCard = submittedCards.get(0);
         for(int i=1; i<numCards; i++){
-            Card currentCard = submittedCards.get(i);
+            Train currentCard = submittedCards.get(i);
             if(!firstCard.isSameColor(currentCard)) return false;
             if(!isSameColor(currentCard)) return false;
         }
         return true;
     }
 
-    public boolean claim(Player player, List<Card> submittedCards){
+    public boolean claim(Player player, List<Train> submittedCards){
         if(isClaimed()) return false;
         if(!validCards(submittedCards)) return false;
         if(!player.hasEnoughTrains(submittedCards.size())) return false;

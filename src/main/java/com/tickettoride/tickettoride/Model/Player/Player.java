@@ -1,38 +1,39 @@
 package com.tickettoride.tickettoride.Model.Player;
-import com.tickettoride.tickettoride.Model.Card.Card;
+import com.tickettoride.tickettoride.Model.Board.Board;
 import com.tickettoride.tickettoride.Model.Card.Train;
 import com.tickettoride.tickettoride.Model.Card.Trip;
+import com.tickettoride.tickettoride.Model.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Player {
     private String username;
     private int pointsSoFar;
-    private List<Train> trainsInPossesion;
-    private List<Trip> tripsInPossesion;
-    private List<Card> cardsInPossession;
+    private List<com.tickettoride.tickettoride.Model.Board.Train> trainsInPossesion;
+    private List<Trip> tripsInPossession;
+    private List<Train> cardsInPossession;
+    private Traverser traverser;
 
-    public Player() {
-        this(getRandomUsername());
-    }
-
-    public Player(String username) {
+    public Player(String username, Color color) {
         this.username = username;
         pointsSoFar = 0;
-        this.trainsInPossesion = new ArrayList<Train>(Train.NUMBER_TRAINS);
-        this.cardsInPossession = new ArrayList<Card>(Card.NUMBER_CARDS);
-        this.tripsInPossesion = new ArrayList<Trip>(Trip.NUMBER_TRIPS);
-    }
 
-    private static String getRandomUsername() {
-        String[] randomUsernames = {"IbnKhaldun", "AlBiruni", "AlMasudi", "AlFarabi"};
-        return randomUsernames[new Random().nextInt(randomUsernames.length)];
+        this.trainsInPossesion = new ArrayList<com.tickettoride.tickettoride.Model.Board.Train>(com.tickettoride.tickettoride.Model.Board.Train.NUMBER_TRAINS);
+        for(int i = 0; i< com.tickettoride.tickettoride.Model.Board.Train.NUMBER_TRAINS; i++){trainsInPossesion.add(new com.tickettoride.tickettoride.Model.Board.Train(color));}
+
+        this.cardsInPossession = new ArrayList<Train>(Train.NUMBER_CARDS);
+        for(int i=0; i<4; i++){cardsInPossession.add(Board.getCard());}
+
+        this.tripsInPossession = new ArrayList<Trip>(Trip.NUMBER_TRIPS);
+        for(int i=0; i<3; i++){tripsInPossession.add(Board.getTrip());}
+
+        this.traverser = new Traverser(trainsInPossesion.get(0).getColor());
     }
 
     public void addPoints(int points){
         this.pointsSoFar += points;
+        traverser.setCurrentPoint(this.pointsSoFar);
     }
 
     public boolean hasEnoughTrains(int routeSize){
