@@ -2,19 +2,20 @@ package com.tickettoride.tickettoride.Model.Board;
 
 import com.tickettoride.tickettoride.Model.Card.Train;
 import com.tickettoride.tickettoride.Model.Color;
-import com.tickettoride.tickettoride.Model.Player.Player;
+import com.tickettoride.tickettoride.Model.Player.PlayerState;
 
 import java.util.List;
 
-public class Track {
+public class Route {
     private final City startCity;
     private final City endCity;
     private boolean occupied;
     private int numTracks;
     private Color trackColor;
-    private Player owner;
+    private PlayerState owner;
 
-    public Track(City startCity, City endCity, int numTracks, Color trackColor){
+
+    public Route(City startCity, City endCity, int numTracks, Color trackColor){
         this.startCity = startCity;
         this.endCity = endCity;
         this.numTracks = numTracks;
@@ -50,13 +51,14 @@ public class Track {
         return true;
     }
 
-    public boolean claim(Player player, List<Train> submittedCards){
-        if(isClaimed()) return false;
-        if(!validCards(submittedCards)) return false;
-        if(!player.hasEnoughTrains(submittedCards.size())) return false;
+    public int length(){return numTracks;}
+
+    public boolean claim(PlayerState player, List<Train> submittedCards){
+        if(isClaimed() || !validCards(submittedCards) || !player.canAfford(this)) return false;
         this.occupied = true;
         owner = player;
-        owner.addPoints(this.countPoints());
+        owner.spendTrains(numTracks);
+        owner.addScore(countPoints());
         return true;
     }
 }

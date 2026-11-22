@@ -2,14 +2,14 @@ package com.tickettoride.tickettoride.Model.Card;
 
 import com.tickettoride.tickettoride.Model.Location;
 
-public class Trip {
+public class Ticket {
     private final Location origin;
     private final Location destination;
     private final int points;
     private State state;
     public static final int NUMBER_TRIPS = 40;
 
-    public Trip(Location start, Location end, int score){
+    public Ticket(Location start, Location end, int score){
         this.origin = start;
         this.destination = end;
         this.points = score;
