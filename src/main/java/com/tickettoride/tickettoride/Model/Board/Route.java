@@ -1,7 +1,7 @@
 package com.tickettoride.tickettoride.Model.Board;
 
-import com.tickettoride.tickettoride.Model.Card.Train;
-import com.tickettoride.tickettoride.Model.Color;
+import com.tickettoride.tickettoride.Model.Card.TrainCard;
+import com.tickettoride.tickettoride.Model.Color.RouteColor;
 import com.tickettoride.tickettoride.Model.Player.PlayerState;
 
 import java.util.List;
@@ -11,11 +11,11 @@ public class Route {
     private final City endCity;
     private boolean occupied;
     private int numTracks;
-    private Color trackColor;
+    private RouteColor trackColor;
     private PlayerState owner;
 
 
-    public Route(City startCity, City endCity, int numTracks, Color trackColor){
+    public Route(City startCity, City endCity, int numTracks, RouteColor trackColor){
         this.startCity = startCity;
         this.endCity = endCity;
         this.numTracks = numTracks;
@@ -37,14 +37,14 @@ public class Route {
     }
 
     public boolean isClaimed(){return occupied;}
-    public boolean isSameColor(Train train){return trackColor == Color.GRAY || train.isSameColor(trackColor);}
+    public boolean isSameColor(TrainCard trainCard){return trackColor == RouteColor.GRAY || trainCard.isSameColor(trackColor);}
 
-    public boolean validCards(List<Train> submittedCards){
+    public boolean validCards(List<TrainCard> submittedCards){
         int numCards = submittedCards.size();
         if(numCards != numTracks) return false;
-        Train firstCard = submittedCards.get(0);
+        TrainCard firstCard = submittedCards.get(0);
         for(int i=1; i<numCards; i++){
-            Train currentCard = submittedCards.get(i);
+            TrainCard currentCard = submittedCards.get(i);
             if(!firstCard.isSameColor(currentCard)) return false;
             if(!isSameColor(currentCard)) return false;
         }
@@ -53,7 +53,7 @@ public class Route {
 
     public int length(){return numTracks;}
 
-    public boolean claim(PlayerState player, List<Train> submittedCards){
+    public boolean claim(PlayerState player, List<TrainCard> submittedCards){
         if(isClaimed() || !validCards(submittedCards) || !player.canAfford(this)) return false;
         this.occupied = true;
         owner = player;

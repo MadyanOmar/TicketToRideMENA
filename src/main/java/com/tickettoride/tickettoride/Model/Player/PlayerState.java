@@ -1,9 +1,8 @@
 package com.tickettoride.tickettoride.Model.Player;
 import com.tickettoride.tickettoride.Model.Board.Route;
-import com.tickettoride.tickettoride.Model.Card.Train;
+import com.tickettoride.tickettoride.Model.Card.TrainCard;
 import com.tickettoride.tickettoride.Model.Card.Ticket;
-import com.tickettoride.tickettoride.Model.Color;
-
+import com.tickettoride.tickettoride.Model.Color.PlayerColor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +11,13 @@ public class PlayerState {
 
     private final int id;
     private final String username;
-    private final Color color;
+    private final PlayerColor color;
     private int trainsRemaining = STARTING_TRAINS;
     private int score = 0;
-    private final List<Train> hand = new ArrayList<>();
+    private final List<TrainCard> hand = new ArrayList<>();
     private final List<Ticket> tickets = new ArrayList<>();
 
-    public PlayerState(int id, String username, Color color) {
+    public PlayerState(int id, String username, PlayerColor color) {
         this.id = id;
         this.username = username;
         this.color = color;
