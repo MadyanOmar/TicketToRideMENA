@@ -10,6 +10,12 @@ public class Ticket {
     public static final int NUMBER_TRIPS = 40;
 
     public Ticket(Location start, Location end, int score){
+        if (start == null || end == null || start == end) {
+            throw new IllegalArgumentException("Ticket needs two different cities");
+        }
+        if (score <= 0) {
+            throw new IllegalArgumentException("Ticket points must be positive");
+        }
         this.origin = start;
         this.destination = end;
         this.points = score;
