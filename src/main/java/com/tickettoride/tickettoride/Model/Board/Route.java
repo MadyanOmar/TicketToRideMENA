@@ -1,12 +1,18 @@
 package com.tickettoride.tickettoride.Model.Board;
 
 import com.tickettoride.tickettoride.Model.Card.TrainCard;
+import com.tickettoride.tickettoride.Model.Color.CardColor;
 import com.tickettoride.tickettoride.Model.Color.RouteColor;
 import com.tickettoride.tickettoride.Model.Player.PlayerState;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 public class Route {
+    public static final int MIN_LENGTH = 1;
+    public static final int MAX_LENGTH = 6;
+    private final int id;
     private final City startCity;
     private final City endCity;
     private boolean occupied;
@@ -15,7 +21,17 @@ public class Route {
     private PlayerState owner;
 
 
-    public Route(City startCity, City endCity, int numTracks, RouteColor trackColor){
+    public Route(int id, City startCity, City endCity, int numTracks, RouteColor trackColor){
+        if (startCity == null || endCity == null || trackColor == null) {
+            throw new IllegalArgumentException("Route needs two cities and a color");
+        }
+        if(startCity == endCity){
+            throw new IllegalArgumentException("Route must connect two different cities");
+        }
+        if(numTracks < MIN_LENGTH || numTracks > MAX_LENGTH){
+            throw new IllegalArgumentException("Route length must be 1-6, got " + numTracks);
+        }
+        this.id = id;
         this.startCity = startCity;
         this.endCity = endCity;
         this.numTracks = numTracks;
@@ -32,23 +48,30 @@ public class Route {
             case 4 -> 7;
             case 5 -> 10;
             case 6 -> 15;
-            default -> 0;
+            default -> throw new IllegalStateException("Unreachable: length is validated");
         };
     }
 
-    public boolean isClaimed(){return occupied;}
-    public boolean isSameColor(TrainCard trainCard){return trackColor == RouteColor.GRAY || trainCard.isSameColor(trackColor);}
+    public boolean sameCities(Route other) {
+        return (startCity.getCityName().equals(other.getStartCity().getCityName()) && endCity.getCityName().equals(other.getEndCity().getCityName())) ||
+                startCity.getCityName().equals(other.endCity.getCityName())  && endCity.getCityName().equals(other.getStartCity().getCityName());
+    }
 
-    public boolean validCards(List<TrainCard> submittedCards){
-        int numCards = submittedCards.size();
-        if(numCards != numTracks) return false;
-        TrainCard firstCard = submittedCards.get(0);
-        for(int i=1; i<numCards; i++){
-            TrainCard currentCard = submittedCards.get(i);
-            if(!firstCard.isSameColor(currentCard)) return false;
-            if(!isSameColor(currentCard)) return false;
+    private City getStartCity(){return startCity;}
+    private City getEndCity(){return endCity;}
+
+    public boolean isClaimed(){return occupied;}
+
+    public boolean validCards(List<TrainCard> cards) {
+        if (cards.size() != numTracks) return false;
+
+        Set<CardColor> colors = EnumSet.noneOf(CardColor.class);
+        for (TrainCard c : cards) {
+            if (c.getColor() != CardColor.RAINBOW) colors.add(c.getColor());
         }
-        return true;
+        if (colors.size() > 1) return false;
+        if (trackColor == RouteColor.GRAY || colors.isEmpty()) return true;
+        return colors.iterator().next().name().equals(trackColor.name());
     }
 
     public int length(){return numTracks;}
@@ -60,5 +83,9 @@ public class Route {
         owner.spendTrains(numTracks);
         owner.addScore(countPoints());
         return true;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }
