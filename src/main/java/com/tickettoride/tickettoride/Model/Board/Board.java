@@ -1,18 +1,23 @@
 package com.tickettoride.tickettoride.Model.Board;
 import com.tickettoride.tickettoride.Model.Card.TrainCard;
 import com.tickettoride.tickettoride.Model.Card.Ticket;
-import java.util.List;
-import java.util.Random;
+
+import java.util.*;
 
 public class Board {
-    private static List<Ticket> tripsDeck;
-    private static List<TrainCard> trainCardDeck;
+    private final List<Route> routes;
+    private final Map<Integer, Route> byId;
 
-    public static TrainCard getCard(){
-        return trainCardDeck.get(new Random().nextInt(trainCardDeck.size()));
+    public Board(List<Route> routes) {
+        this.routes = List.copyOf(routes);
+        byId = new HashMap<>();
+        for (Route r : this.routes) {
+            if (byId.put(r.getId(), r) != null) {
+                throw new IllegalArgumentException("Duplicate route id: " + r.getId());
+            }
+        }
     }
 
-    public static Ticket getTrip(){
-        return tripsDeck.get(new Random().nextInt(tripsDeck.size()));
-    }
+    public List<Route> getRoutes() { return routes; }
+    public Optional<Route> find(int routeId) { return Optional.ofNullable(byId.get(routeId)); }
 }
