@@ -12,4 +12,8 @@ public class City {
         this.x = x;
         this.y = y;
     }
+
+    public String getCityName(){
+        return name.name().toLowerCase();
+    }
 }
