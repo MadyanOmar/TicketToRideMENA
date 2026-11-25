@@ -1,13 +1,7 @@
 package com.tickettoride.tickettoride.Model.Board;
-
-import com.tickettoride.tickettoride.Model.Card.TrainCard;
-import com.tickettoride.tickettoride.Model.Color.CardColor;
 import com.tickettoride.tickettoride.Model.Color.RouteColor;
 import com.tickettoride.tickettoride.Model.Player.PlayerState;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 public class Route {
     public static final int MIN_LENGTH = 1;
@@ -15,10 +9,8 @@ public class Route {
     private final int id;
     private final City startCity;
     private final City endCity;
-    private boolean occupied;
     private int numTracks;
     private RouteColor trackColor;
-    private PlayerState owner;
 
 
     public Route(int id, City startCity, City endCity, int numTracks, RouteColor trackColor){
@@ -36,11 +28,9 @@ public class Route {
         this.endCity = endCity;
         this.numTracks = numTracks;
         this.trackColor = trackColor;
-        this.occupied = false;
-        owner = null;
     }
 
-    private int countPoints(){
+    public int getPoints(){
         return switch (numTracks) {
             case 1 -> 1;
             case 2 -> 2;
@@ -59,33 +49,7 @@ public class Route {
 
     private City getStartCity(){return startCity;}
     private City getEndCity(){return endCity;}
-
-    public boolean isClaimed(){return occupied;}
-
-    public boolean validCards(List<TrainCard> cards) {
-        if (cards.size() != numTracks) return false;
-
-        Set<CardColor> colors = EnumSet.noneOf(CardColor.class);
-        for (TrainCard c : cards) {
-            if (c.getColor() != CardColor.RAINBOW) colors.add(c.getColor());
-        }
-        if (colors.size() > 1) return false;
-        if (trackColor == RouteColor.GRAY || colors.isEmpty()) return true;
-        return colors.iterator().next().name().equals(trackColor.name());
-    }
-
     public int length(){return numTracks;}
-
-    public boolean claim(PlayerState player, List<TrainCard> submittedCards){
-        if(isClaimed() || !validCards(submittedCards) || !player.canAfford(this)) return false;
-        this.occupied = true;
-        owner = player;
-        owner.spendTrains(numTracks);
-        owner.addScore(countPoints());
-        return true;
-    }
-
-    public Integer getId() {
-        return id;
-    }
+    public Integer getId() {return id;}
+    public RouteColor getTrackColor(){return trackColor;}
 }
